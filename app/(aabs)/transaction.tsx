@@ -5,6 +5,8 @@
   import style from "../styles";
   import { router } from "expo-router";
   import ModalBlock from "@/utils/modal";
+import getRandomColor from "@/utils/getColor";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
  export const TransData = [{
@@ -12,22 +14,52 @@
       type:'income',
       value:90,
       currency:['$','L.L','€'],
-    },{name:'car',
+       color:getRandomColor(),
+    },
+    
+
+    {name:'car',
       type:'expense',
       value:50,
       currency:['$','L.L','€'],
-     
-    }
-      ,{name:'car',
+      color:getRandomColor(),
+    },
+    {name:'car',
+      type:'expense',
+      value:32,
+      currency:['$','L.L','€'],
+      color:getRandomColor(),
+    },
+    {name:'car',
+      type:'expense',
+      value:54,
+      currency:['$','L.L','€'],
+    },
+    {name:'car',
+      type:'expense',
+      value:54,
+      currency:['$','L.L','€'],
+    },
+    {name:'car',
+      type:'expense',
+      value:50,
+      currency:['$','L.L','€'],
+    },
+
+      {name:'car',
       type:'expense',
       value:5,
       currency:['$','L.L','€'],
-    },{
+    },
+
+    {
       name:'salary',
       type:'income',
       value:90,
       currency:['$','L.L','€'],
-      }];
+       color:getRandomColor(),
+      },
+    ];
   export default function Transaction() 
 {
     const [state,setState] = useState({
@@ -35,11 +67,9 @@
        modalVisible: false,
     });
 
-    console.log(state.modalVisible);
-    
       const date = new Date();
     return (
-      <View style={style.container}>
+      <SafeAreaView style={style.container}>
         <View style={style.balanceBox}>
           <Text style={style.titleText}>Total Balance</Text>
           <Text style={style.balanceAmount}>$2,450.00</Text>
@@ -61,7 +91,7 @@
         
         <View style={style.transactionHeader}>
           <Text style={style.recentText}>Recent Transactions</Text>
-          <TouchableOpacity  onPress={()=>{router.push('/transactionType')}} style={style.addButton}>
+          <TouchableOpacity  onPress={()=>{router.push('/routes/transactionType')}} style={style.addButton}>
           <Icon name='add' size={fn.wp(10)} color='green' />
         </TouchableOpacity>
         </View>
@@ -103,8 +133,15 @@
       modalVisible: visible,  
     }));
   }}
+  data={TransData}
+  setTransData={(data) =>{
+    setState((prev) =>({
+      ...prev,
+      Trans:data
+    }))
+  }}
 />
-      </View>
+      </SafeAreaView>
     );    
   }
 

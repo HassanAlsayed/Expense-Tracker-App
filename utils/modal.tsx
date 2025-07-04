@@ -1,11 +1,34 @@
-import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { router } from 'expo-router';
+import { Modal, View, Text, TouchableOpacity,TouchableWithoutFeedback, StyleSheet } from 'react-native';
+
+
+interface DataItem{
+    name:string,
+    type:string,
+    value:number,
+    currency:string[],
+}
 
  interface ModalBlockProps {
        modalVisible:boolean;
-       setModalVisible:(vidible:boolean) => void 
+       setModalVisible:(visible:boolean) => void ;
+       data:DataItem[];
+       setTransData:(data:DataItem[]) => void;
     }
-export default function ModalBlock({modalVisible,setModalVisible}:ModalBlockProps) {
+
    
+export default function ModalBlock({modalVisible,setModalVisible,data,setTransData}:ModalBlockProps) {
+    const handleEdit = () =>{
+       setModalVisible(false);
+       router.push('/transactionType');
+    }
+
+    const handleDelete = () =>{
+       setModalVisible(false);
+     const filter =  data.filter((item)=> item.value === 5);
+     setTransData(filter);
+       
+    }
     return (
         <View>
             <Modal
@@ -14,21 +37,30 @@ export default function ModalBlock({modalVisible,setModalVisible}:ModalBlockProp
                 visible={modalVisible}
                 onRequestClose={() => setModalVisible(false)}
             >
+                <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        <Text style={styles.modalTitle}>Modal Title</Text>
-                        <Text style={styles.modalText}>This is your modal content. You can add any content here.</Text>
+                        <Text style={styles.modalTitle}>Transaction Options</Text>
                         
                         <View style={styles.buttonContainer}>
                             <TouchableOpacity
                                 style={[styles.button, styles.buttonClose]}
-                                onPress={() => setModalVisible(false)}
+                                onPress={handleEdit }
+                                
                             >
-                                <Text style={styles.textStyle}>Close</Text>
+                                <Text style={styles.textStyle}>Edit</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                style={[styles.button, styles.buttonClose]}
+                                onPress={handleDelete}
+                            >
+                                <Text style={styles.textStyle}>Delete</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
                 </View>
+                </TouchableWithoutFeedback>
             </Modal>
         </View>
     );
@@ -43,7 +75,7 @@ const styles = StyleSheet.create({
     },
     modalView: {
         margin: 20,
-        backgroundColor: 'white',
+        backgroundColor: 'green',
         borderRadius: 20,
         padding: 25,
         alignItems: 'center',
@@ -70,12 +102,12 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 16,
         lineHeight: 22,
-        color: '#666',
+        color: 'black',
     },
     buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
+        flexDirection: 'column',
         width: '100%',
+        gap:8,
     },
     button: {
         borderRadius: 10,
@@ -84,10 +116,10 @@ const styles = StyleSheet.create({
         minWidth: 100,
     },
     buttonClose: {
-        backgroundColor: '#2196F3',
+        backgroundColor: 'white',
     },
     textStyle: {
-        color: 'white',
+         color: '#333',
         fontWeight: 'bold',
         textAlign: 'center',
         fontSize: 16,
