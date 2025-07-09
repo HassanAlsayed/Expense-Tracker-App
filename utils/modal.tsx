@@ -1,4 +1,3 @@
-import { router } from 'expo-router';
 import { Modal, View, Text, TouchableOpacity,TouchableWithoutFeedback, StyleSheet } from 'react-native';
 
 
@@ -12,23 +11,20 @@ interface DataItem{
  interface ModalBlockProps {
        modalVisible:boolean;
        setModalVisible:(visible:boolean) => void ;
-       data:DataItem[];
-       setTransData:(data:DataItem[]) => void;
     }
 
    
-export default function ModalBlock({modalVisible,setModalVisible,data,setTransData}:ModalBlockProps) {
+export default function ModalBlock({modalVisible,setModalVisible}:ModalBlockProps) {
     const handleEdit = () =>{
        setModalVisible(false);
-       router.push('/transactionType');
     }
 
-    const handleDelete = () =>{
-       setModalVisible(false);
-     const filter =  data.filter((item)=> item.value === 5);
-     setTransData(filter);
+    // const handleDelete = () =>{
+    //    setModalVisible(false);
+    //  const filter =  data.filter((item)=> item.value === 5);
+    //  setTransData(filter);
        
-    }
+    // }
     return (
         <View>
             <Modal
@@ -53,7 +49,7 @@ export default function ModalBlock({modalVisible,setModalVisible,data,setTransDa
 
                             <TouchableOpacity
                                 style={[styles.button, styles.buttonClose]}
-                                onPress={handleDelete}
+                               // onPress={handleDelete}
                             >
                                 <Text style={styles.textStyle}>Delete</Text>
                             </TouchableOpacity>

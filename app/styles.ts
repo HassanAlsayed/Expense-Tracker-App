@@ -27,7 +27,7 @@ const style = StyleSheet.create({
   },
   
   titleText: {
-    fontSize: fn.getFontSize(16),
+    fontSize: fn.getFontSize(18),
     color: 'white',
     fontWeight: '500',
     textAlign: 'center',
@@ -131,12 +131,20 @@ const style = StyleSheet.create({
   },
   
   transactionName: {
-    fontSize: fn.getFontSize(20),
+    fontSize: fn.getFontSize(18),
     color: 'white',
     fontWeight: '500',
     textTransform: 'capitalize',
-    width: fn.wp(25),
+    minWidth: fn.wp(25),
+    paddingLeft:10
   },
+
+  leftBlock: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  maxWidth: fn.wp(60), 
+  flexShrink: 1,
+},
   
   transactionSign: {
     fontSize: fn.getFontSize(18),
@@ -177,8 +185,8 @@ const style = StyleSheet.create({
   
   scrollContainer: {
     flex: 1,
-    marginHorizontal: fn.wp(4),
     marginTop: fn.hp(1),
+    marginBottom:fn.hp(-8),
   },
    addButton: {
     backgroundColor: '#061A40',
