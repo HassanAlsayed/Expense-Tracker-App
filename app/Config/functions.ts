@@ -1,8 +1,6 @@
-  import { addDoc, collection, getDocs } from "firebase/firestore";
+  import { addDoc, collection, deleteDoc, doc, getDocs } from "firebase/firestore";
   import db from "../Config/fireStore";
-  import Expense from "@/utils/types";
-
-
+  import {Expense} from "@/utils/types";
 
   export const addData = async ({name,icon,type,value,createdAt}:Expense) =>{
      try {
@@ -25,7 +23,9 @@
     const expensesSnapshot = await getDocs(expensesCol);
     
     const expensesList = expensesSnapshot.docs.map(doc => ({
-      ...doc.data() as Expense
+      ...doc.data() as Expense,
+        id:doc.id
+
     }));
 
     return expensesList;
@@ -33,4 +33,14 @@
     } catch (error) {
     console.error("Error getting documents: ", error);
   }
+  }
+
+  export const deleteData = async (id:string) =>{
+    try{
+      const expensesCol = doc(db, "Expenses",id); 
+      await deleteDoc(expensesCol)
+    }catch (error) {
+    console.error("Error getting documents: ", error);
+  }
+    
   }

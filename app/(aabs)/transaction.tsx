@@ -1,40 +1,29 @@
-  import { useState } from "react";
+  import { useEffect, useState } from "react";
   import { Text, TouchableOpacity, View, Pressable } from "react-native";
   import Icon from 'react-native-vector-icons/MaterialIcons';
   import fn from '../../utils/scaling';
   import style from "../styles";
-  import ModalBlock from "@/utils/modal";
   import { SafeAreaView } from "react-native-safe-area-context";
   import { router } from "expo-router";
   import MonthPickerCalendar from "@/utils/monthPicker";
-import { useData } from "@/utils/useData";
-import TransData from "@/utils/transData";
+  import { useDataStore } from "@/utils/useData";
+  import TransData from "@/utils/transData";
 
 
-  export default function Transaction() 
+  export default function Transaction()
 {
       const [modalVisible,setModalVisible] = useState(false);
 
        const [visibleCalendar,setVisibleCalendar] = useState(false);
-       const {expenses,setDate,date} = useData();
+       const {expenses,setDate,date,fetchExpenses,sumOfValues} = useDataStore();
 
-const sumOfValues = () => {
-  return expenses.reduce(
-    (totals, item) => {
-      if (item.type === 'expense') {
-        totals.expenseSum += item.value;
-      } else {
-        totals.incomeSum += item.value;
-      }
-      totals.currency = item.currency;
-      return totals;
-    },
-    { expenseSum: 0, incomeSum: 0, currency: '', totalSum: 0 }
-  );
-};
+       useEffect(()=>{
+         fetchExpenses()
+       },[])
 
-const { expenseSum, incomeSum, currency } = sumOfValues();
-const totalSum = incomeSum - expenseSum;
+
+ const { expenseSum, incomeSum, currency } = sumOfValues();
+ const totalSum = incomeSum - expenseSum;
 
   return (
   <SafeAreaView style={style.container}>
@@ -68,12 +57,8 @@ const totalSum = incomeSum - expenseSum;
         <Text style={style.amountText}>
           -{expenseSum}{currency}
         </Text>
-    
     </View>
-
 </View>
-
-
     </View>
 
     <View style={style.transactionHeader}>
@@ -92,17 +77,10 @@ const totalSum = incomeSum - expenseSum;
         <Text style={style.emptyText}>No Transactions found for this month!</Text>
       </View>
     ) : (
-      <TransData expenses={expenses} setModalVisible={setModalVisible}/>
+      <TransData expenses={expenses} setModalVisible={setModalVisible} modalVisible={modalVisible}/>
        )}
     </> }
     
-   
-
-    <ModalBlock
-      modalVisible={modalVisible}
-      setModalVisible={setModalVisible }
-      
-    />
   </SafeAreaView>
 );
 }

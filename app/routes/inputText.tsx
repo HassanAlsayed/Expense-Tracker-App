@@ -1,7 +1,5 @@
 import { router } from 'expo-router';
-import { addDoc, collection } from 'firebase/firestore';
-import db from '../Config/fireStore';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -11,7 +9,6 @@ import {
   Dimensions,
 } from 'react-native';
 import { addData } from '../Config/functions';
-import Expense from '@/utils/types';
 
 const { height, width } = Dimensions.get('window');
 

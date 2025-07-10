@@ -1,30 +1,21 @@
+import { deleteData } from '@/app/Config/functions';
 import { Modal, View, Text, TouchableOpacity,TouchableWithoutFeedback, StyleSheet } from 'react-native';
+import { ModalBlockProps } from './types';
+import { useDataStore } from './useData';
 
 
-interface DataItem{
-    name:string,
-    type:string,
-    value:number,
-    currency:string[],
-}
-
- interface ModalBlockProps {
-       modalVisible:boolean;
-       setModalVisible:(visible:boolean) => void ;
-    }
-
-   
-export default function ModalBlock({modalVisible,setModalVisible}:ModalBlockProps) {
+export default function ModalBlock({modalVisible,setModalVisible,id}:ModalBlockProps) {
     const handleEdit = () =>{
        setModalVisible(false);
     }
 
-    // const handleDelete = () =>{
-    //    setModalVisible(false);
-    //  const filter =  data.filter((item)=> item.value === 5);
-    //  setTransData(filter);
-       
-    // }
+    const {fetchExpenses} = useDataStore();
+
+    const handleDelete = async () =>{
+       setModalVisible(false);
+       await deleteData(id);
+       await fetchExpenses();
+    }
     return (
         <View>
             <Modal
@@ -41,7 +32,7 @@ export default function ModalBlock({modalVisible,setModalVisible}:ModalBlockProp
                         <View style={styles.buttonContainer}>
                             <TouchableOpacity
                                 style={[styles.button, styles.buttonClose]}
-                                onPress={handleEdit }
+                                onPress={handleEdit}
                                 
                             >
                                 <Text style={styles.textStyle}>Edit</Text>
@@ -49,7 +40,7 @@ export default function ModalBlock({modalVisible,setModalVisible}:ModalBlockProp
 
                             <TouchableOpacity
                                 style={[styles.button, styles.buttonClose]}
-                               // onPress={handleDelete}
+                               onPress={handleDelete}
                             >
                                 <Text style={styles.textStyle}>Delete</Text>
                             </TouchableOpacity>

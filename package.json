@@ -16,6 +16,7 @@
     "@react-navigation/bottom-tabs": "^7.4.2",
     "@react-navigation/elements": "^2.3.8",
     "@react-navigation/native": "^7.1.14",
+    "d3-shape": "^3.2.0",
     "date-fns": "^4.1.0",
     "expo": "~53.0.12",
     "expo-blur": "~14.1.5",
@@ -52,7 +53,8 @@
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "~0.20.0",
     "react-native-webview": "13.13.5",
-    "victory-native": "^41.17.4"
+    "victory-native": "^41.17.4",
+    "zustand": "^5.0.6"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

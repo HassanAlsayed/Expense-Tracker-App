@@ -1,25 +1,41 @@
-import { useState, useEffect } from "react";
-import { getData } from "@/app/Config/functions";
-import Expense from "./types";
+// store.ts
+import { getData } from "@/app/Config/functions"
+import { create } from 'zustand'
+import { StoreState } from "./types"
 
-export const useData = () => {
-  const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [date, setDate] = useState(new Date());
+export const useDataStore = create<StoreState>((set, get) => ({
+  expenses: [],
+  date: new Date(),
+  setDate: (date: Date) => {
+    set({ date })
+  },
 
-  useEffect(() => {
-    const dataList = async () => {
-      const month = date.toLocaleString("default", { month: "short" });
-      const expensesList = await getData();
+  fetchExpenses: async () => {
+    const date = get().date
+    const month = date.toLocaleString("default", { month: "short" })
+    const expensesList = await getData()
 
-      const filteredExpenses = expensesList?.filter(
-        (item) => item.createdAt.split(",")[1] === month
-      );
+    const filteredExpenses = expensesList?.filter(
+      (item) => item.createdAt.split(",")[1] === month
+    )
+    set({ expenses: filteredExpenses || [] })
+  },
 
-      setExpenses(filteredExpenses || []);
-    };
+   sumOfValues: () => {
+    const expenses = get().expenses;
+  return expenses.reduce(
+    (totals, item) => {
+      if (item.type === 'expense') {
+        totals.expenseSum += item.value;
+      } else {
+        totals.incomeSum += item.value;
+      }
+      totals.currency = item.currency;
+      return totals;
+    },
+    { expenseSum: 0, incomeSum: 0, currency: '', totalSum: 0 }
+  );
+},
 
-    dataList();
-  }, [date]);
+}))
 
-  return { expenses, setDate ,date};
-};
