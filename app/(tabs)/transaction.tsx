@@ -19,7 +19,7 @@
 
        useEffect(()=>{
          fetchExpenses()
-       },[])
+       },[date])
 
 
  const { expenseSum, incomeSum, currency } = sumOfValues();

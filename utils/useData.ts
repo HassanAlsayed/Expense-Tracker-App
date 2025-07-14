@@ -10,13 +10,21 @@ export const useDataStore = create<StoreState>((set, get) => ({
     set({ date })
   },
 
+  getEmail:'',
+
+   setEmail: (getEmail: string) => {
+    set({ getEmail })
+  },
+
   fetchExpenses: async () => {
     const date = get().date
+    const email = get().getEmail;
+    
     const month = date.toLocaleString("default", { month: "short" })
     const expensesList = await getData()
 
     const filteredExpenses = expensesList?.filter(
-      (item) => item.createdAt.split(",")[1] === month
+      (item) => item.createdAt.split(",")[1] === month && item.email === email
     )
     set({ expenses: filteredExpenses || [] })
   },

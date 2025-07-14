@@ -1,15 +1,36 @@
-import { deleteData } from '@/app/Config/functions';
+import { deleteData, getDataById } from '@/app/Config/functions';
 import { Modal, View, Text, TouchableOpacity,TouchableWithoutFeedback, StyleSheet } from 'react-native';
 import { ModalBlockProps } from './types';
 import { useDataStore } from './useData';
+import { router } from 'expo-router';
 
 
 export default function ModalBlock({modalVisible,setModalVisible,id}:ModalBlockProps) {
-    const handleEdit = () =>{
-       setModalVisible(false);
-    }
 
     const {fetchExpenses} = useDataStore();
+
+
+    const handleEdit = async () =>{
+       setModalVisible(false);
+        const transClicked = await getDataById(id);
+
+       if(transClicked?.type === 'expense')
+       {
+          router.push({pathname:'/routes/transactionType',params:{indexPage:0,indexPos:transClicked?.index,amount:transClicked.value,id:id,
+            Name:transClicked.name,
+            Icon:transClicked.icon,
+            TypeClicked:transClicked.type
+
+          }});
+      }
+       if(transClicked?.type === 'income'){
+         router.push({pathname:'/routes/transactionType',params:{indexPage:1,indexPos:transClicked?.index,amount:transClicked.value,id:id,
+             Name:transClicked.name,
+            Icon:transClicked.icon,
+             TypeClicked:transClicked.type
+         }});
+       }
+    }
 
     const handleDelete = async () =>{
        setModalVisible(false);

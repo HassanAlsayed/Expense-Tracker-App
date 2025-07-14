@@ -40,6 +40,9 @@ const style = StyleSheet.create({
     borderColor: getRandomColor(), 
     borderWidth: 2,
   },
+  expenseBlockDisabled:{
+    opacity:0.5
+  }
 });
 
 export default style;

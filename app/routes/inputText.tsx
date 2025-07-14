@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -8,7 +8,8 @@ import {
   StyleSheet,
   Dimensions,
 } from 'react-native';
-import { addData } from '../Config/functions';
+import { addData, updateData } from '../Config/functions';
+import { handleProps } from '@/utils/types';
 
 const { height, width } = Dimensions.get('window');
 
@@ -19,15 +20,8 @@ const numberKeys = [
   ['.', '0', '⌫'],
 ];
 
- type handleProps={
-    showInput:boolean,
-    name:string,
-    icon:string,
-    type:string
-}
 
-
-export default function InputText({showInput,name,icon,type}:handleProps) {
+export default function InputText({showInput,name,icon,type,index,amount,id,Name,Icon,indexPos,TypeClicked}:handleProps) {
 
   const [value, setValue] = useState('');
 
@@ -43,18 +37,47 @@ export default function InputText({showInput,name,icon,type}:handleProps) {
       setValue((prev) => prev + key);
     }
   };
+  useEffect(() => {
+  if (showInput) {
+    if (amount > 0) {
+      setValue(String(amount));
+    } else {
+      setValue('');
+    }
+  }
+}, [showInput, amount]);
 
   const handleDone = async () =>{
- 
    try{
-    await addData({
+
+    console.log(amount , Name , Icon , TypeClicked , indexPos);
+    
+  
+   if( Name === "undefined" &&  Icon === "undefined" &&  TypeClicked === "undefined" && typeof indexPos === "undefined")
+   {
+      await addData({
+      id:'',
       name,
       icon,
       type,
       value: Number(value),
       currency:'$',
-      createdAt
+      createdAt,
+      index,
     });
+   }else{
+  
+    await updateData(id,{
+      id:'',
+      name:Name,
+      icon:Icon,
+      type:TypeClicked,
+      value:Number(value),
+      currency:'$',
+      createdAt,
+      index:indexPos,
+    })
+  }
 
     router.push("/(aabs)/transaction");
    }catch(e) {
@@ -75,7 +98,7 @@ export default function InputText({showInput,name,icon,type}:handleProps) {
 
           <View style={styles.amountContainer}>
             <Text style={styles.amountText}>
-              {value || '0.00'}
+              { value || '0.00'}
             </Text>
             <Text style={styles.currency}>$</Text>
           </View>

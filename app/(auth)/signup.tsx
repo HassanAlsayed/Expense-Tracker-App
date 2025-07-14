@@ -1,58 +1,160 @@
 import { router } from "expo-router";
-import { ImageBackground, Text, TextInput, TouchableOpacity, View} from "react-native";
+import { ImageBackground, Text, TextInput, TouchableOpacity, View, KeyboardAvoidingView, ScrollView, Platform,Alert} from "react-native";
 import style from './styles';
+import { useState } from "react";
+import { addUserInfo, getUserInfo, signUp } from "../Config/functions";
+import LoadingDots from "@/utils/LoadingDots ";
 
-export default function signup() {
+export default function Signup() {
+
+    const [credential,setCredential] = useState({
+        email:'',
+        password:'',
+        userName:''
+    });
+     const [loading,setloading] = useState(false);
 
    const HandleLogIn = () => {
         router.push('/login');
     }
-  return (
-        
-        <View style={style.container}>
-              <ImageBackground source={require('../../assets/images/loginProf.png')} style={style.loginProf} resizeMode='cover'/> 
-           
-            
-            <View style={[style.inputs_container,{flex:1.5}]}>
-               <Text style={style.starting_text}>Let's Get Started</Text>
-                <Text style={style.header}>Create an account to track your expenses</Text>
-                <TextInput 
-                    placeholder="Enter your name" 
-                    keyboardType='name-phone-pad' 
-                    style={style.inputs}
-                    autoCapitalize="none"
-                    autoCorrect={true}
-                />
-                <TextInput 
-                    placeholder="Enter your email" 
-                    keyboardType="email-address" 
-                    style={style.inputs}
-                    autoCapitalize="none"
-                    autoCorrect={true}
-                />
-                <TextInput 
-                    placeholder="Enter your password" 
-                    secureTextEntry={true}
-                    style={style.inputs}
-                    autoCapitalize="none"
-                    autoCorrect={true}
-                />
-            
-            <TouchableOpacity   
-                style={style.loginButton} 
-                onPress={() => console.log("Login pressed")}
-            >
-                <Text style={style.loginButtonText}>Sign Up</Text>
-            </TouchableOpacity> 
-            
-            <Text style={style.signupText}>
-                Already have an account?{' '}
-                <Text style={style.signupLink} onPress={HandleLogIn}>
-                    Log In
-                </Text>
-            </Text>
-            </View>
 
-        </View>
+    const handleSignUp = async () =>{
+        if (!credential.email.trim()) {
+            Alert.alert("Validation Error", "Email is required.");
+            return;
+          }
+          
+          if (!credential.password) {
+            Alert.alert("Validation Error", "Password is required.");
+            return;
+          }
+          
+          const password = credential.password;
+          const hasNumber = /\d/.test(password);
+          
+          if (password.length < 8 || !hasNumber) {
+            Alert.alert(
+              "Validation Error",
+              "Password must be at least 8 characters long and contain at least one number."
+            );
+            return;
+        }
+        setloading(true);
+      
+      const user = await signUp(credential);
+        if(!user)
+        {
+            Alert.alert('email already in use');
+            setloading(false);
+            setCredential({email:'',
+                password:'',
+                userName:''});
+            return;
+         }
+        
+       await addUserInfo(credential.email,credential.userName);
+       router.push('/login');
+    }
+
+    return (
+        <KeyboardAvoidingView 
+            style={{flex: 1}} 
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+        >
+            <ScrollView 
+                contentContainerStyle={{flex: 1}}
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+                bounces={false}
+            >
+                <View style={style.container}>
+                    <ImageBackground 
+                        source={require('../../assets/images/loginProf.png')} 
+                        style={style.loginProf} 
+                        resizeMode='cover'
+                    /> 
+                    
+                    <View style={[style.inputs_container,{flex:1.5}]}>
+                        <Text style={style.starting_text}>Let's Get Started</Text>
+                        <Text style={style.header}>Create an account to track your expenses</Text>
+                        
+                        <TextInput 
+                            placeholder="Enter your name" 
+                            keyboardType='default' 
+                            style={style.inputs}
+                            autoCapitalize="words"
+                            autoCorrect={true}
+                            value={credential.userName}
+                            onChangeText={(text)=> 
+                                setCredential((prev)=>({
+                                ...prev,
+                                userName:text,
+                            }))
+                        }
+                        />
+                        
+                        <TextInput 
+                            placeholder="Enter your email" 
+                            keyboardType="email-address" 
+                            style={style.inputs}
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            value={credential.email}
+                            onChangeText={(text)=> 
+                                setCredential((prev)=>({
+                                ...prev,
+                                email:text,
+                            }))
+                        }
+                        />
+                        
+                       <View style={{paddingBottom: 10}}>
+                            <TextInput 
+                                placeholder="Enter your password" 
+                                secureTextEntry={true}
+                                style={style.inputs}
+                                autoCapitalize="none"
+                                autoCorrect={false}
+                                value={credential.password}
+                                onChangeText={(text)=> 
+                                    setCredential((prev)=>({
+                                    ...prev,
+                                    password:text,
+                                }))
+                            }
+                            />
+                        </View>
+
+                        <TouchableOpacity   
+                                style={[
+                                        style.loginButton,
+                                        loading && { opacity: 0.4 }  
+                                    ]}
+                                onPress={handleSignUp}
+                                disabled={loading}
+                            >
+                            {!loading ? (
+                                <Text style={style.loginButtonText}>Sign Up</Text>
+                            ) : (
+                                <LoadingDots
+                                style={{ width: 50, height: 20 }}
+                                animationDuration={800}
+                                color={'blue'} 
+                                />
+                            )}     
+                            </TouchableOpacity> 
+
+                        
+                        <Text style={style.signupText}>
+                            Already have an account?{' '}
+                            <Text style={style.signupLink} onPress={HandleLogIn}>
+                                Log In
+                            </Text>
+                        </Text>
+                    </View>
+                </View>
+            </ScrollView>
+        </KeyboardAvoidingView>
     )
 }
