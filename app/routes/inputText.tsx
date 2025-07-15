@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { addData, updateData } from '../Config/functions';
 import { handleProps } from '@/utils/types';
+import { useDataStore } from '@/utils/useData';
 
 const { height, width } = Dimensions.get('window');
 
@@ -47,6 +48,8 @@ export default function InputText({showInput,name,icon,type,index,amount,id,Name
   }
 }, [showInput, amount]);
 
+const {email,currency} = useDataStore();
+
   const handleDone = async () =>{
    try{
 
@@ -61,9 +64,10 @@ export default function InputText({showInput,name,icon,type,index,amount,id,Name
       icon,
       type,
       value: Number(value),
-      currency:'$',
+      currency:currency,
       createdAt,
       index,
+      email,
     });
    }else{
   
@@ -73,13 +77,14 @@ export default function InputText({showInput,name,icon,type,index,amount,id,Name
       icon:Icon,
       type:TypeClicked,
       value:Number(value),
-      currency:'$',
+      currency:currency,
       createdAt,
       index:indexPos,
+      email:email
     })
   }
 
-    router.push("/(aabs)/transaction");
+    router.push("/(tabs)/transaction");
    }catch(e) {
     console.error(e); 
    }
@@ -100,7 +105,7 @@ export default function InputText({showInput,name,icon,type,index,amount,id,Name
             <Text style={styles.amountText}>
               { value || '0.00'}
             </Text>
-            <Text style={styles.currency}>$</Text>
+            <Text style={styles.currency}>{currency}</Text>
           </View>
 
           <View style={styles.keysContainer}>

@@ -2,17 +2,20 @@ import { router } from "expo-router";
 import { ImageBackground, Text, TextInput, TouchableOpacity, View, KeyboardAvoidingView, ScrollView, Platform,Alert} from "react-native";
 import style from './styles';
 import { useState } from "react";
-import { addUserInfo, getUserInfo, signUp } from "../Config/functions";
+import { addUserInfo, signUp } from "../Config/functions";
 import LoadingDots from "@/utils/LoadingDots ";
+import { useDataStore } from "@/utils/useData";
 
 export default function Signup() {
 
     const [credential,setCredential] = useState({
         email:'',
         password:'',
-        userName:''
+        userName:'',
+        phoneNumber:''
     });
      const [loading,setloading] = useState(false);
+     const {setUserName} = useDataStore();
 
    const HandleLogIn = () => {
         router.push('/login');
@@ -48,11 +51,14 @@ export default function Signup() {
             setloading(false);
             setCredential({email:'',
                 password:'',
-                userName:''});
+                userName:'',
+                phoneNumber:''
+            });
             return;
          }
         
-       await addUserInfo(credential.email,credential.userName);
+         setUserName(credential.userName);
+       await addUserInfo(credential.email,credential.userName,credential.phoneNumber);
        router.push('/login');
     }
 
@@ -76,7 +82,6 @@ export default function Signup() {
                     /> 
                     
                     <View style={[style.inputs_container,{flex:1.5}]}>
-                        <Text style={style.starting_text}>Let's Get Started</Text>
                         <Text style={style.header}>Create an account to track your expenses</Text>
                         
                         <TextInput 

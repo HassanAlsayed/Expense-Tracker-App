@@ -10,15 +10,33 @@ export const useDataStore = create<StoreState>((set, get) => ({
     set({ date })
   },
 
-  getEmail:'',
+  email:'',
+  getUserName:'',
+  phoneNumber:'',
+  currency:'',
 
-   setEmail: (getEmail: string) => {
-    set({ getEmail })
+  setCurrency(currency:string)
+  {
+    set({currency})
+  },
+
+  setPhoneNumber(phoneNumber:string)
+  {
+    set({phoneNumber})
+  },
+
+
+  setUserName(getUserName:string) {
+      set({getUserName})
+  },
+
+   setEmail: (email: string) => {
+    set({ email })
   },
 
   fetchExpenses: async () => {
     const date = get().date
-    const email = get().getEmail;
+    const email = get().email;
     
     const month = date.toLocaleString("default", { month: "short" })
     const expensesList = await getData()

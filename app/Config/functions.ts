@@ -1,11 +1,11 @@
   import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, query, updateDoc, where } from "firebase/firestore";
   import {db,authApp} from "../Config/fireStore";
   import {auth, Expense} from "@/utils/types";
-  import {createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithEmailAndPassword} from 'firebase/auth'
+  import {createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithEmailAndPassword, signOut} from 'firebase/auth'
 
 
    const expensesCol = collection(db, "Expenses"); 
-  export const addData = async ({name,icon,type,value,createdAt,index}:Expense) =>{
+  export const addData = async ({name,icon,type,value,createdAt,index,email}:Expense) =>{
      try {
           await addDoc(expensesCol, {
             name: name,
@@ -14,7 +14,8 @@
             type: type,
             value: value,
             createdAt: createdAt,
-            index:index
+            index:index,
+            email:email
           });
           } catch (error) {
       console.log("Error adding document: ", error);
@@ -90,12 +91,12 @@
    }
   }
 
-  export const addUserInfo = async (email:string,userName:string) =>
+  export const addUserInfo = async (email:string,userName:string,phoneNumber:string) =>
   {
     try{
        const userRef = collection(db,"UserInfo");
 
-    const user = await addDoc(userRef,{email:email,userName:userName});
+    const user = await addDoc(userRef,{email:email,userName:userName,phoneNumber:phoneNumber});
     return user;
     }catch(error){
       console.log('faild adding user info',error);
@@ -104,22 +105,26 @@
 
   }
 
-  export const getUserInfo = async (email:string) =>
-  {
-    try{
-       const userRef = doc(db,"UserInfo",email);
+export const getUserInfo = async (email: string) => {
+  try {
+    const usersRef = collection(db, "UserInfo");
 
-       console.log(userRef);
-       
+    const q = query(usersRef, where("email", "==", email));
 
-    const user = await getDoc(userRef);
-    return user;
-    }catch(error){
-      console.log('faild loading user info',error);
-      
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const docSnap = querySnapshot.docs[0];
+      return docSnap.data(); 
+    } else {
+      console.log("No user found with that email.");
+      return null;
     }
-
+  } catch (error) {
+    console.log("Failed loading user info", error);
+    return null;
   }
+};
 
   export const resetPassword = async (email:string) =>{
 
@@ -132,4 +137,39 @@
     return false;
   }
 };
+
+export const logOut = async () =>{
+  try{
+    await signOut(authApp).then(() => {
+    console.log("User signed out!");
+  })
+}catch(error){
+  console.error("Error signing out:", error);
+}
+
+}
+
+export const getCurrency = async (email:string,currency:string) =>{
+   try {
+    const usersRef = collection(db, "Expenses");
+
+    const q = query(usersRef, where("email", "==", email));
+
+
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      for (const document of querySnapshot.docs) {
+        const docRef = doc(db, "Expenses", document.id);
+
+        await updateDoc(docRef, {
+          currency: currency,
+        });
+    }
+  }
+  } catch (error) {
+    console.log("Failed loading user info", error);
+    return null;
+  }
+}
 

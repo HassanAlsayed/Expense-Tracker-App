@@ -30,13 +30,24 @@ type StoreState = {
     totalSum: number;
   }
   setEmail:(email:string) => void,
-  getEmail:string
+  email:string,
+  setUserName:(userName:string) => void,
+  getUserName:string,
+  setPhoneNumber:(phoneNumber:string) => void,
+  phoneNumber:string,
+  setCurrency:(currency:string) => void
+  currency:string
 }
 
 type ModalBlockProps = {
        modalVisible:boolean,
        setModalVisible:(visible:boolean) => void ,
-       id?:string
+       id:string
+    }
+
+    type ModalBlockCurrency = {
+       modalVisible:boolean,
+       setModalVisible:(visible:boolean) => void ,
     }
 
 type transactionTypeProp = {
@@ -69,7 +80,7 @@ type indexPosProps = {
     Name:string,
     Icon:string,
     indexPos:number | undefined,
-    TypeClicked:string
+    TypeClicked:string,
 
 }
 
@@ -80,4 +91,4 @@ type auth = {
 
 
 export {Expense, FlatListType,StoreState,ModalBlockProps,
-  transactionTypePosition,indexPosProps,handleProps,auth};
+  transactionTypePosition,indexPosProps,handleProps,auth,ModalBlockCurrency};

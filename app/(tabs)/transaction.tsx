@@ -15,14 +15,16 @@
       const [modalVisible,setModalVisible] = useState(false);
 
        const [visibleCalendar,setVisibleCalendar] = useState(false);
-       const {expenses,setDate,date,fetchExpenses,sumOfValues} = useDataStore();
+       const {expenses,setDate,date,fetchExpenses,sumOfValues,currency} = useDataStore();
 
        useEffect(()=>{
          fetchExpenses()
-       },[date])
+       },[date,currency])
+
+       
 
 
- const { expenseSum, incomeSum, currency } = sumOfValues();
+ const { expenseSum, incomeSum} = sumOfValues();
  const totalSum = incomeSum - expenseSum;
 
   return (

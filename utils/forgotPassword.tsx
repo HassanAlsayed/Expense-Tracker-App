@@ -5,7 +5,8 @@ import {
   StyleSheet, 
   Text,
   TouchableOpacity, 
-  TextInput 
+  TextInput, 
+  Alert
 } from 'react-native';
 import { ModalBlockProps } from './types';
 import fn from './scaling';
@@ -21,6 +22,7 @@ export default function ForgotPassword({ modalVisible, setModalVisible }: ModalB
     const handleReset = async () => {
         setloading(true);
       await resetPassword(email);
+      Alert.alert("Reset password link send via email");
      setModalVisible(false);
     }
   return (

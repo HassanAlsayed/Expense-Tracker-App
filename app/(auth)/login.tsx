@@ -1,7 +1,7 @@
 import { router } from "expo-router";
 import { ImageBackground, Text, TextInput, TouchableOpacity, View, KeyboardAvoidingView, ScrollView, Platform,Alert } from "react-native";
 import style from './styles';
-import { signIn } from "../Config/functions";
+import { getCurrency, getUserInfo, signIn } from "../Config/functions";
 import { useState } from "react";
 import { useDataStore } from "@/utils/useData";
 import LoadingDots from "@/utils/LoadingDots ";
@@ -22,7 +22,7 @@ export default function LogIn() {
         router.push('/signup');
     }
 
-    const {setEmail} = useDataStore();
+    const {setEmail,setUserName,setPhoneNumber} = useDataStore();
 
 
 const handleLogIN = async () => {
@@ -47,19 +47,22 @@ const handleLogIN = async () => {
     return;
   }
     setloading(true);
+  
   const user = await signIn(credential);
   if (user) {
     setEmail(credential.email);
-    router.push('/(tabs)/transaction');
+   const user = await getUserInfo(credential.email);
+
+   setUserName(user?.userName);
+   setPhoneNumber(user?.phoneNumber);
+    
+
+    router.push('/(aabs)/transaction');
   } else {
     Alert.alert("Login Failed", "Invalid credentials or user does not exist.");
     router.push('/signup');
  }
 };
-
-
-
-    
     return (
         <KeyboardAvoidingView 
             style={{flex: 1}} 

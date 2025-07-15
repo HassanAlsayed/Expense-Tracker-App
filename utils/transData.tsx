@@ -5,12 +5,12 @@ import style from '@/app/styles';
 import { FlatListType } from './types';
 import fn from '../utils/scaling';
 import ModalBlock from './modal';
-
+import { useDataStore } from './useData';
 
 function TransData({expenses,setModalVisible,modalVisible}:FlatListType) {
 
   const [id,setId] = useState('');
-
+  const {currency} = useDataStore();
  return(
   <>
      <FlatList
@@ -37,11 +37,11 @@ function TransData({expenses,setModalVisible,modalVisible}:FlatListType) {
                   <Text style={style.transactionSign}>
                     {item.type === 'income' ? (
                       <Text style={{ color: 'green' }}>
-                        + {item.value}{item.currency}
+                        + {item.value} {currency}
                       </Text>
                     ) : (
                       <Text style={{ color: 'red' }}>
-                        - {item.value}{item.currency}
+                        - {item.value} {currency}
                       </Text>
                     )}
                   </Text>

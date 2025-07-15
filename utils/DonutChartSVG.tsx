@@ -6,7 +6,7 @@ import { useDataStore } from '@/utils/useData';
 import fn from '@/utils/scaling';
 
 const DonutChartSVG = () => {
-  const { expenses, sumOfValues } = useDataStore();
+  const { expenses, sumOfValues,currency } = useDataStore();
   const { expenseSum, incomeSum } = sumOfValues();
 
   if (expenses.length === 0) {
@@ -58,7 +58,7 @@ const DonutChartSVG = () => {
           bottom: 20,
         }}
       >
-        Total Balance: {incomeSum - expenseSum}$
+        Total Balance: {incomeSum - expenseSum} {currency}
       </Text>
 
       <Svg width={size} height={size}>
