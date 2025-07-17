@@ -53,9 +53,6 @@ const {email,currency} = useDataStore();
   const handleDone = async () =>{
    try{
 
-    console.log(amount , Name , Icon , TypeClicked , indexPos);
-    
-  
    if( Name === "undefined" &&  Icon === "undefined" &&  TypeClicked === "undefined" && typeof indexPos === "undefined")
    {
       await addData({
@@ -84,7 +81,7 @@ const {email,currency} = useDataStore();
     })
   }
 
-    router.push("/(tabs)/transaction");
+    router.push("/(aabs)/transaction");
    }catch(e) {
     console.error(e); 
    }
@@ -105,7 +102,7 @@ const {email,currency} = useDataStore();
             <Text style={styles.amountText}>
               { value || '0.00'}
             </Text>
-            <Text style={styles.currency}>{currency}</Text>
+            <Text style={styles.currency}>{currency ?? '$'}</Text>
           </View>
 
           <View style={styles.keysContainer}>

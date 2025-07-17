@@ -1,4 +1,3 @@
-// store.ts
 import { getData } from "@/app/Config/functions"
 import { create } from 'zustand'
 import { StoreState } from "./types"
@@ -12,19 +11,18 @@ export const useDataStore = create<StoreState>((set, get) => ({
 
   email:'',
   getUserName:'',
-  phoneNumber:'',
-  currency:'',
+  currency:'$',
+  imageUrl:'',
+
+  setImage(imageUrl:string)
+  {
+    set({imageUrl})
+  },
 
   setCurrency(currency:string)
   {
     set({currency})
   },
-
-  setPhoneNumber(phoneNumber:string)
-  {
-    set({phoneNumber})
-  },
-
 
   setUserName(getUserName:string) {
       set({getUserName})

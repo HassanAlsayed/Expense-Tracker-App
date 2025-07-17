@@ -35,11 +35,8 @@ const handlePressBlock = (index:number) =>{
   setSelectedBlock(index);
   
   const rowIndex = Math.floor(index / 3);
-const numRows = Math.ceil(incomes.length / 3);
-const safeRowIndex = Math.min(rowIndex, numRows - 1);
-
 indexRef.current?.scrollToIndex({
-  index: safeRowIndex,
+  index: rowIndex,
   animated: true,
 });
 

@@ -8,13 +8,13 @@ import {
   TextInput, 
   Alert
 } from 'react-native';
-import { ModalBlockProps } from './types';
+import { ModalPassProps } from './types';
 import fn from './scaling';
 import { useState } from 'react';
 import { resetPassword } from '@/app/Config/functions';
 import LoadingDots from './LoadingDots ';
 
-export default function ForgotPassword({ modalVisible, setModalVisible }: ModalBlockProps) {
+export default function ForgotPassword({ modalVisible, setModalVisible }: ModalPassProps) {
 
     const [email,setEmail] = useState('');
      const [loading,setloading] = useState(false);

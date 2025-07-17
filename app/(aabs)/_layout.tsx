@@ -1,7 +1,11 @@
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Tabs } from 'expo-router';
+import { Image } from 'react-native';
+import { useDataStore } from '@/utils/useData';
 
 export default function TabsLayout() {
+
+  const {imageUrl} = useDataStore();
 
     return(
         <Tabs screenOptions={{headerShown:false, 
@@ -15,10 +19,23 @@ export default function TabsLayout() {
             <Tabs.Screen name="chart"  options={{title:"Chart",tabBarIcon: ({color}) => (
             <Icon name="bar-chart" size={30} color={color} />
           ),}}></Tabs.Screen>
-            <Tabs.Screen name="profile"  options={{title:"Profile",tabBarIcon: ({color}) => (
-            <Icon name="person" size={30} color={color} />
-          ),
-          }}></Tabs.Screen>
+            <Tabs.Screen 
+  name="profile" 
+  options={{ 
+    title: "Profile",
+    tabBarIcon: ({ color }) => (
+      imageUrl ? (
+        <Image 
+          source={{ uri: imageUrl }} 
+          style={{ width: 30, height: 30, borderRadius: 15 }} 
+        />
+      ) : (
+        <Icon name="person" size={30} color={color} />
+      )
+    )
+  }} 
+/>
+
           
         </Tabs>
     )

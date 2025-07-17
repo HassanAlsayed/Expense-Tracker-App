@@ -33,19 +33,35 @@ type StoreState = {
   email:string,
   setUserName:(userName:string) => void,
   getUserName:string,
-  setPhoneNumber:(phoneNumber:string) => void,
-  phoneNumber:string,
   setCurrency:(currency:string) => void
-  currency:string
+  currency:string,
+  imageUrl:string,
+  setImage:(imageUrl:string) => void
 }
 
 type ModalBlockProps = {
        modalVisible:boolean,
        setModalVisible:(visible:boolean) => void ,
-       id:string
+       id:string,
+       
     }
 
+  type ModalImageProps = {
+       setModalImageVisible:(visible:boolean) => void ,
+       modalImageVisible:boolean,
+  }
+
+  type ModalEditProps = {
+       setModalEditVisible:(visible:boolean) => void ,
+       modalEditVisible:boolean,
+  }
+
     type ModalBlockCurrency = {
+       modalVisible:boolean,
+       setModalVisible:(visible:boolean) => void ,
+    }
+
+     type ModalPassProps = {
        modalVisible:boolean,
        setModalVisible:(visible:boolean) => void ,
     }
@@ -91,4 +107,5 @@ type auth = {
 
 
 export {Expense, FlatListType,StoreState,ModalBlockProps,
-  transactionTypePosition,indexPosProps,handleProps,auth,ModalBlockCurrency};
+  transactionTypePosition,indexPosProps,handleProps,auth,
+  ModalBlockCurrency,ModalImageProps,ModalEditProps,ModalPassProps};

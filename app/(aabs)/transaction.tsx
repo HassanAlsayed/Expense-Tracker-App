@@ -22,8 +22,6 @@
        },[date,currency])
 
        
-
-
  const { expenseSum, incomeSum} = sumOfValues();
  const totalSum = incomeSum - expenseSum;
 
@@ -40,25 +38,26 @@
     <>  
     <View style={style.balanceBox}>
       <Text style={style.titleText}>Total Balance</Text>
-      <Text style={style.balanceAmount}>{totalSum}{currency}</Text>
+      <Text style={style.balanceAmount}>{totalSum}{currency ?? '$'}</Text>
     <View style={style.innerCon}>
-       <View  style={style.incomeBox}>
- 
-      <Icon name="trending-up" size={fn.wp(6)} color="#4CAF50" />
-      <Text style={style.boxTitle}>Income</Text>
-        <Text style={style.amountText}>
-          +{incomeSum}{currency}
-        </Text>
-     
-    </View>
+       
     <View style={style.expenseBox}>
 
  
       <Icon name="trending-down" size={fn.wp(6)} color="#F44336" />
       <Text style={style.boxTitle}>Expense</Text>
         <Text style={style.amountText}>
-          -{expenseSum}{currency}
+          -{expenseSum}{currency ?? '$'}
         </Text>
+    </View>
+    <View  style={style.incomeBox}>
+ 
+      <Icon name="trending-up" size={fn.wp(6)} color="#4CAF50" />
+      <Text style={style.boxTitle}>Income</Text>
+        <Text style={style.amountText}>
+          +{incomeSum}{currency ?? '$'}
+        </Text>
+     
     </View>
 </View>
     </View>

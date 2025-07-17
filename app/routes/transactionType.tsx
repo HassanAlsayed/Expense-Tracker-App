@@ -1,40 +1,62 @@
-import {useState} from 'react';
+import { useState } from 'react';
 import { TabView, TabBar } from 'react-native-tab-view';
-import { width } from '@/utils/scaling';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, useWindowDimensions } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
 import { ExpenseRoute } from './expenseRoute';
 import { IncomeRoute } from './incomeRoute';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useLocalSearchParams } from 'expo-router';
-import { transactionTypePosition } from '@/utils/types';
 
-
-  
 export default function TransactionType() {
-const { indexPage, indexPos,amount,id,Name,Icon,TypeClicked} = useLocalSearchParams();
+  const layout = useWindowDimensions();
 
-const indexPosNum = indexPos !== undefined && !isNaN(Number(indexPos))
-  ? Number(indexPos)
-  : undefined;
+  const {
+    indexPage,
+    indexPos,
+    amount,
+    id,
+    Name,
+    Icon,
+    TypeClicked
+  } = useLocalSearchParams();
 
+  const indexPosNum =
+    indexPos !== undefined && !isNaN(Number(indexPos))
+      ? Number(indexPos)
+      : undefined;
 
-const [index,setIndex] = useState<number>(Number(indexPage) || 0);
+  const [index, setIndex] = useState<number>(Number(indexPage) || 0);
   const [routes] = useState([
     { key: 'expense', title: 'Expense' },
     { key: 'income', title: 'Income' },
   ]);
 
-  const renderScene = ({route}:transactionTypePosition) =>{
-   if (route.key === 'expense') {
-  return <ExpenseRoute indexPos={indexPosNum} amount={Number(amount)} id={String(id)} Name={String(Name)}
-   Icon={String(Icon)} TypeClicked={String(TypeClicked)}/>;
-}
+  const sharedProps = {
+    indexPos: indexPosNum,
+    amount: Number(amount),
+    id: String(id),
+    Name: String(Name),
+    Icon: String(Icon),
+    TypeClicked: String(TypeClicked),
+  };
 
-if (route.key === 'income') {
-  return <IncomeRoute indexPos={indexPosNum} amount={Number(amount)} id={String(id)} Name={String(Name)} 
-  Icon={String(Icon)} TypeClicked={String(TypeClicked)}/>;
-}
-
-  }
+  const renderScene = ({ route }: { route: { key: string } }) => {
+    switch (route.key) {
+      case 'expense':
+        return (
+          <View style={{ flex: 1 }}>
+            <ExpenseRoute {...sharedProps} />
+          </View>
+        );
+      case 'income':
+        return (
+          <View style={{ flex: 1 }}>
+            <IncomeRoute {...sharedProps} />
+          </View>
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -42,16 +64,16 @@ if (route.key === 'income') {
         navigationState={{ index, routes }}
         renderScene={renderScene}
         onIndexChange={setIndex}
-        initialLayout={{ width: width }}
+        initialLayout={{ width: layout.width }}
         renderTabBar={props => (
           <TabBar
             {...props}
             indicatorStyle={{ backgroundColor: 'blue' }}
+            style={{ backgroundColor: '#111' }}
           />
         )}
+        lazy
       />
     </SafeAreaView>
   );
 }
-
-

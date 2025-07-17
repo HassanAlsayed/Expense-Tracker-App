@@ -1,4 +1,4 @@
-  import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, query, updateDoc, where } from "firebase/firestore";
+  import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
   import {db,authApp} from "../Config/fireStore";
   import {auth, Expense} from "@/utils/types";
   import {createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithEmailAndPassword, signOut} from 'firebase/auth'
@@ -91,12 +91,12 @@
    }
   }
 
-  export const addUserInfo = async (email:string,userName:string,phoneNumber:string) =>
+  export const addUserInfo = async (email:string,userName:string,imageUrl:string) =>
   {
     try{
        const userRef = collection(db,"UserInfo");
 
-    const user = await addDoc(userRef,{email:email,userName:userName,phoneNumber:phoneNumber});
+    const user = await addDoc(userRef,{email:email,userName:userName,imageUrl:''});
     return user;
     }catch(error){
       console.log('faild adding user info',error);
@@ -171,5 +171,75 @@ export const getCurrency = async (email:string,currency:string) =>{
     console.log("Failed loading user info", error);
     return null;
   }
+}
+
+export const getCurrencyByEmail = async (email: string) => {
+  try {
+    const usersRef = collection(db, "Expenses");
+
+    const q = query(usersRef, where("email", "==", email));
+
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const docSnap = querySnapshot.docs[0];
+      return docSnap.data().currency;
+       
+    } else {
+      console.log("No user found with that email.");
+      return null;
+    }
+  } catch (error) {
+    console.log("Failed loading currency", error);
+    return null;
+  }
+};
+
+export const addImage = async (email: string, imageUrl: string) =>{
+  try{
+        const usersRef = collection(db, "UserInfo");
+
+    const q = query(usersRef, where("email", "==", email));
+     const querySnapshot = await getDocs(q);
+
+      return updateDoc(doc(db,"UserInfo",querySnapshot.docs[0].id),{
+        imageUrl:imageUrl
+      });
+
+  }catch (error) {
+    console.error("Failed add image", error);
+}
+}
+
+export const removeImage = async (email: string) =>{
+     try{
+        const usersRef = collection(db, "UserInfo");
+
+    const q = query(usersRef, where("email", "==", email));
+     const querySnapshot = await getDocs(q);
+
+      return updateDoc(doc(db,"UserInfo",querySnapshot.docs[0].id),{
+        imageUrl:''
+      });
+
+  }catch (error) {
+    console.error("Failed remove image", error);
+}
+}
+
+export const updateUserName = async (email:string,newUserName:string) =>{
+   try{
+        const usersRef = collection(db, "UserInfo");
+
+    const q = query(usersRef, where("email", "==", email));
+     const querySnapshot = await getDocs(q);
+
+      return updateDoc(doc(db,"UserInfo",querySnapshot.docs[0].id),{
+        userName:newUserName
+      });
+
+  }catch (error) {
+    console.error("Failed update userName", error);
+}
 }
 

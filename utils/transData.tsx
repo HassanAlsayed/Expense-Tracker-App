@@ -37,11 +37,11 @@ function TransData({expenses,setModalVisible,modalVisible}:FlatListType) {
                   <Text style={style.transactionSign}>
                     {item.type === 'income' ? (
                       <Text style={{ color: 'green' }}>
-                        + {item.value} {currency}
+                        + {item.value} {currency ?? '$'}
                       </Text>
                     ) : (
                       <Text style={{ color: 'red' }}>
-                        - {item.value} {currency}
+                        - {item.value} {currency ?? '$'}
                       </Text>
                     )}
                   </Text>

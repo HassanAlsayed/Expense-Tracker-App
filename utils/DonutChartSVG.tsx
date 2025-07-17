@@ -58,7 +58,7 @@ const DonutChartSVG = () => {
           bottom: 20,
         }}
       >
-        Total Balance: {incomeSum - expenseSum} {currency}
+        Total Balance: {incomeSum - expenseSum} {currency ?? '$'}
       </Text>
 
       <Svg width={size} height={size}>

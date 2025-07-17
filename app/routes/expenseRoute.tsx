@@ -1,12 +1,12 @@
-import { FlatList, Pressable, SafeAreaView, Text } from "react-native";
+import { FlatList, Pressable, SafeAreaView, Text,InteractionManager } from "react-native";
 import Iconn from 'react-native-vector-icons/MaterialIcons';
 import style from "./style";
 import InputText from "./inputText";
 import { useEffect, useRef, useState } from "react";
 import { indexPosProps } from "@/utils/types";
- 
-export const ExpenseRoute = ({indexPos,amount,id,Name,Icon,TypeClicked}:indexPosProps) => {
 
+
+export const ExpenseRoute = ({ indexPos, amount, id, Name, Icon, TypeClicked }: indexPosProps) => {
 const expenses = [
   { name: "Accessories", icon: "watch" ,index:0},           
   { name: "Bills", icon: "receipt-long" , index:1},           
@@ -29,78 +29,84 @@ const expenses = [
   { name: "Vehicle", icon: "directions-car",index:18 }
 ];
 
-const [showInput, setShowInput] = useState(false);
-const [name, setName] = useState('');
-const [icon, setIcon] = useState('');
-const [index, setIndex] = useState(0);
-const [slectedBlock, setSelectedBlock] = useState<number>();
-const ROW_HEIGHT = 120;
+  const [showInput, setShowInput] = useState(false);
+  const [name, setName] = useState('');
+  const [icon, setIcon] = useState('');
+  const [index, setIndex] = useState(0);
+  const [selectedBlock, setSelectedBlock] = useState<number>();
+     const ROW_HEIGHT = 100;
 
-const indexRef = useRef<FlatList>(null)
 
+  const indexRef = useRef<FlatList>(null);
 
 const handlePressBlock = (id: number) => {
   setShowInput(true);
+  setSelectedBlock(id);
   setName(expenses[id].name);
   setIcon(expenses[id].icon);
   setIndex(expenses[id].index);
-  setSelectedBlock(id);
 
- const firstItemOfRow = Math.floor(index / 3) * 3;
+  const rowIndex = Math.floor(id / 3);
 
-const safeIndex = Math.min(firstItemOfRow, expenses.length - 1);
-
-indexRef.current?.scrollToIndex({
-  index: safeIndex,
-  animated: true,
-});
-}
+  indexRef.current?.scrollToIndex({
+    index: rowIndex,
+    animated: true,
+  });
+};
 
 useEffect(() => {
   if (typeof indexPos !== "undefined") {
-   const rowIndex = Math.floor(indexPos / 3);
-
-    indexRef.current?.scrollToIndex({ index: rowIndex, animated: true });
+      const rowIndex = Math.floor(indexPos / 3);
+      indexRef.current?.scrollToIndex({ index: rowIndex, animated: true });
     setShowInput(true);
   }
 }, [indexPos]);
 
-    
-    return(
-      <SafeAreaView style={style.scene}>
-      <FlatList
-        ref={indexRef}
-        showsVerticalScrollIndicator={false}
-        data={expenses}
-        numColumns={3}
-        getItemLayout={(expenses, index) => ({
-        length: ROW_HEIGHT,
-        offset: ROW_HEIGHT * index,
-        index,
-      })}
-        keyExtractor={(item,index) => index.toString()}
-        columnWrapperStyle={style.scrollContainer}
-        renderItem={({ item, index }) => (
-       <Pressable
-        onPress={() => handlePressBlock(index) }
-        style={[
-          style.expenseBlock,
-          (slectedBlock === index || indexPos === index) && style.expenseBlockFocused ,
-          
 
-        ]}
-      >
-        <Iconn name={item.icon} size={30} color="white" />
-        <Text style={style.text} numberOfLines={1}>
-          {item.name}
-        </Text>
-      </Pressable>
+  return (
+    <SafeAreaView style={style.scene}>
+
+<FlatList
+  ref={indexRef}
+  data={expenses}
+  numColumns={3}
+  keyExtractor={(item, index) => index.toString()}
+
+  columnWrapperStyle={style.scrollContainer}
+  getItemLayout={(_, index) => ({
+    length: ROW_HEIGHT,
+    offset: ROW_HEIGHT * index,
+    index,
+  })}
+  renderItem={({ item, index }) => (
+    <Pressable
+      onPress={() => handlePressBlock(index)}
+      style={[
+        style.expenseBlock,
+        (selectedBlock === index) && style.expenseBlockFocused,
+      ]}
+    >
+      <Iconn name={item.icon} size={30} color="white" />
+      <Text style={style.text} numberOfLines={1}>
+        {item.name}
+      </Text>
+    </Pressable>
   )}
-> 
-      </FlatList>
-        <InputText name={name} icon={icon} index={index} showInput={showInput} type="expense" amount={amount}
-         id={id} Name={Name} Icon={Icon} indexPos={indexPos} TypeClicked={TypeClicked}/>
-      </SafeAreaView>
-    );
+/>
+<InputText
+        name={name}
+        icon={icon}
+        index={index}
+        showInput={showInput}
+        type="expense"
+        amount={amount}
+        id={id}
+        Name={Name}
+        Icon={Icon}
+        indexPos={indexPos}
+        TypeClicked={TypeClicked}
+      />
 
-  };
+    </SafeAreaView>
+  );
+};

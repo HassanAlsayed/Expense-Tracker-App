@@ -1,22 +1,27 @@
 import { useDataStore } from "@/utils/useData";
 import { router } from "expo-router";
-import { Alert, Image, Share, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Image, Share, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View,TouchableWithoutFeedback } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import fn from '../../utils/scaling';
-import { logOut } from "../Config/functions";
+import { addImage, logOut } from "../Config/functions";
 import CurrencyModal from "@/utils/currencyModal";
 import { useState } from "react";
+import HandleImagePick from "@/utils/handleImagePick";
+import { UpdateUserName } from "@/utils/updateUserName";
 
 
 export default function Profile() {
 
   const [modalVisible,setModalVisible] = useState(false);
+  const [modalImageVisible,setModalImageVisible] = useState(false);
+  const [modalEditVisible,setModalEditVisible] = useState(false);
 
     const handleRecommendFriends = async() =>{
+      const appRepo = 'https://github.com/HassanAlsayed/Expense-Tracker-App'
 
        try {
-    const result = await Share.share({
-      message: "Check out this amazing tracker app:expense-tracker-568cd",
+             const result = await Share.share({
+             message: `Check out this amazing tracker app:${appRepo}`,
     });
         
     if (result.action === Share.sharedAction) {
@@ -29,22 +34,22 @@ export default function Profile() {
   }
   }
 
-  const handleChangeLanguage = () =>{
-
-  }
-
    const handleChangeCurrency = () =>{
      setModalVisible(true);
   }
 
+  const handleAboutUs = () =>{
+    router.push('/aboutUs');
+  }
+
+
   const profile = [
     {title:'Recommend to friends', icon:'thumb-up',methode:handleRecommendFriends},
-    {title:'Change Language', icon:'language',methode:handleChangeLanguage},
     {title:'Change Currency', icon:'currency-exchange',methode:handleChangeCurrency},
-    {title:'About Us', icon:'info'},
+    {title:'About Us', icon:'info',methode:handleAboutUs},
   ]
 
-  const {getUserName} = useDataStore();
+  const {getUserName,email,imageUrl} = useDataStore();
 
   const handleLogout = async () =>{
     await logOut();
@@ -52,24 +57,40 @@ export default function Profile() {
     router.push('/(auth)/login');
   }
 
-
+  const handleImage = async () =>{
+    setModalImageVisible(true);
+    await addImage(email,imageUrl);
+  }
+  
 
   return (
-    <SafeAreaView style={styles.container}>
+   <SafeAreaView style={styles.container}>
+  <TouchableWithoutFeedback onPress={() => {setModalVisible(false);
+    setModalImageVisible(false);
+     setModalEditVisible(false)
+    }}>
+    <View style={{ flex: 1 }}>
       <View style={styles.profileHeader}>
         <View style={styles.profileImageContainer}>
-         <Pressable>
-           <Image 
-            source={{ uri: 'https://via.placeholder.com/120x120/4CAF50/FFFFFF?text=User' }} 
-            style={styles.profileImage}
-          />
-         </Pressable>
+          <Pressable onPressOut={handleImage}>
+           <View style={styles.imageWrapper}>
+  {imageUrl ? (
+    <Image source={{ uri: imageUrl }} style={styles.profileImage} />
+  ) : (
+    <View style={styles.placeholder}>
+      <Icon name="person" size={45} color="#4CAF50" />
+      <Text style={{ color: '#888', marginTop: 5 }}>No image</Text>
+    </View>
+  )}
+</View>
+
+          </Pressable>
         </View>
         
         <View style={styles.usernameContainer}>
           <Text style={styles.username}>{getUserName}</Text>
           <View style={styles.actionIcons}>
-            <TouchableOpacity style={styles.iconButton}>
+            <TouchableOpacity style={styles.iconButton} onPress={() => setModalEditVisible(true)}>
               <Icon name="edit" size={20} color="#4CAF50" />
             </TouchableOpacity>
             <TouchableOpacity style={styles.iconButton} onPressOut={handleLogout}>
@@ -82,15 +103,21 @@ export default function Profile() {
       <View style={styles.wrapper}>
         <ScrollView showsVerticalScrollIndicator={false}>
           {profile.map((item, index) => (
-              <Pressable style={styles.profileItem} key={index} onPressOut={item.methode}>
-              <Icon name={item.icon} size={24} color="#4CAF50"/>
+            <Pressable style={styles.profileItem} key={index} onPressOut={item.methode}>
+              <Icon name={item.icon} size={24} color="#4CAF50" />
               <Text style={styles.title}>{item.title}</Text>
-              </Pressable>
+            </Pressable>
           ))}
         </ScrollView>
-        <CurrencyModal modalVisible={modalVisible} setModalVisible={setModalVisible}/>
       </View>
-    </SafeAreaView>
+
+      <CurrencyModal modalVisible={modalVisible} setModalVisible={setModalVisible} />
+      <HandleImagePick modalImageVisible={modalImageVisible} setModalImageVisible={setModalImageVisible} />
+      <UpdateUserName modalEditVisible={modalEditVisible} setModalEditVisible={setModalEditVisible} />
+    </View>
+  </TouchableWithoutFeedback>
+</SafeAreaView>
+
   );
 }
 
@@ -115,6 +142,7 @@ const styles = StyleSheet.create({
     borderRadius: 75,
     borderWidth: 3,
     borderColor: '#4CAF50',
+    resizeMode:'cover'
   },
   usernameContainer: {
     alignItems: 'center',
@@ -161,4 +189,22 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     flex: 1,
   },
+  imageWrapper: {
+  width: 150,
+  height: 150,
+  borderRadius: 75,
+  overflow: 'hidden',
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginTop: 10,
+  borderWidth: 3,
+  borderColor: '#4CAF50',
+},
+
+placeholder: {
+  justifyContent: 'center',
+  alignItems: 'center',
+  flex: 1,
+}
+
 });

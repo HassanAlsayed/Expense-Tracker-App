@@ -36,6 +36,7 @@ const style = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
+
    expenseBlockFocused: {
     borderColor: getRandomColor(), 
     borderWidth: 2,

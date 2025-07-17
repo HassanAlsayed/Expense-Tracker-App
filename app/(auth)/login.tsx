@@ -1,7 +1,7 @@
 import { router } from "expo-router";
 import { ImageBackground, Text, TextInput, TouchableOpacity, View, KeyboardAvoidingView, ScrollView, Platform,Alert } from "react-native";
 import style from './styles';
-import { getCurrency, getUserInfo, signIn } from "../Config/functions";
+import { getCurrencyByEmail, getUserInfo, signIn } from "../Config/functions";
 import { useState } from "react";
 import { useDataStore } from "@/utils/useData";
 import LoadingDots from "@/utils/LoadingDots ";
@@ -22,7 +22,7 @@ export default function LogIn() {
         router.push('/signup');
     }
 
-    const {setEmail,setUserName,setPhoneNumber} = useDataStore();
+    const {setEmail,setUserName,setCurrency,setImage} = useDataStore();
 
 
 const handleLogIN = async () => {
@@ -49,13 +49,14 @@ const handleLogIN = async () => {
     setloading(true);
   
   const user = await signIn(credential);
+  
   if (user) {
     setEmail(credential.email);
-   const user = await getUserInfo(credential.email);
-
-   setUserName(user?.userName);
-   setPhoneNumber(user?.phoneNumber);
-    
+   const userInfo = await getUserInfo(credential.email);
+   const currency = await getCurrencyByEmail(credential.email);
+   setUserName(userInfo?.userName);
+   setImage(userInfo?.imageUrl)
+   setCurrency(currency);
 
     router.push('/(aabs)/transaction');
   } else {

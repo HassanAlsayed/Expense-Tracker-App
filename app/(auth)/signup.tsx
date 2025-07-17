@@ -12,7 +12,6 @@ export default function Signup() {
         email:'',
         password:'',
         userName:'',
-        phoneNumber:''
     });
      const [loading,setloading] = useState(false);
      const {setUserName} = useDataStore();
@@ -52,13 +51,12 @@ export default function Signup() {
             setCredential({email:'',
                 password:'',
                 userName:'',
-                phoneNumber:''
             });
             return;
          }
         
          setUserName(credential.userName);
-       await addUserInfo(credential.email,credential.userName,credential.phoneNumber);
+       await addUserInfo(credential.email,credential.userName);
        router.push('/login');
     }
 
